@@ -66,7 +66,9 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, line):
         """Creates a new instance, saves it (to the JSON file)
-        and prints the id expected syntax:  create <class name>
+        and prints the id
+        expected syntax: create <Class name> <param 1> <param 2> ...
+        expected Param syntax: <key name>=<value>
         """
         if line:
             args = line.split()
@@ -74,14 +76,28 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class name missing **")
             return
-
         if cls_name not in self.allcls:
             print("** class doesn't exist **")
             return
 
-        obj_new = self.allcls[cls_name]()
-        obj_new.save()
-        print(obj_new.id)
+        new_obj = self.allcls[line[0]]()
+        for arg in args[1:]:
+            param = arg.split("=")
+            if param is None:
+                continue
+            kn = param[0]
+            value = param[1]
+            if len(param) == 2:
+                value = eval(value)
+                if isinstance(value, str):
+                    value = value.replace(
+                        "_", " ").replace('"', '\\"')
+                    setattr(new_obj, kn, value)
+            
+        storage.new(new_obj)
+        print(new_obj.id)
+        storage.save()
+
 
     def do_show(self, line):
         """Prints the string representation of an instance based on
