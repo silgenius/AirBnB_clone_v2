@@ -6,11 +6,15 @@
     This module implements the State class, which inherits from BaseModel.
 """
 
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy.orm import relationship
 
 
-class State(BaseModel):
+class State(BaseModel, Base):
     """
     Represents a state where cities are located.
     """
-    name = ""
+    __tablename__ = "states"
+
+    name = Column(String(128), nullable=False)
+    cities = relationship("City", backref="state", cascade="all, delete-orphan")
