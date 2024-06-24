@@ -7,7 +7,8 @@
 """
 
 from models.base_model import BaseModel
-
+from sqlalchemy.orm import relatioship
+from sqlalchemy import Column, String
 
 class User(BaseModel):
     """
@@ -21,10 +22,16 @@ class User(BaseModel):
         last_name (str): The last name of the user.
         All attributes defaults to an empty string.
     """
-    email = ""
-    password = ""
-    first_name = ""
-    last_name = ""
+    __tablename__ = 'users'
+    email = Colunm(String(128), nullable=False)
+    password = Column(String(128), nullable=False)
+    first_name = Column(String(128))
+    last_name = Column(String(128))
+
+    places = relationship("Place", cascade="all, delete, delete-orphan",
+            backref="user")
+    reviews = relationship("Review", cascade="all, delete, delete-orphan",
+            backref="user")
 
     def __init__(self, *args, **kwargs):
         """
