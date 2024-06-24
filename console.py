@@ -80,24 +80,24 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
 
-        new_obj = self.allcls[line[0]]()
+        new_obj = self.allcls[cls_name]()
         for arg in args[1:]:
             param = arg.split("=")
-            if param is None:
+            if not param:
                 continue
-            kn = param[0]
-            value = param[1]
+
             if len(param) == 2:
+                kn = param[0]
+                value = param[1]
                 value = eval(value)
                 if isinstance(value, str):
                     value = value.replace(
                         "_", " ").replace('"', '\\"')
-                    setattr(new_obj, kn, value)
-            
+                setattr(new_obj, kn, value)
+
         storage.new(new_obj)
         print(new_obj.id)
         storage.save()
-
 
     def do_show(self, line):
         """Prints the string representation of an instance based on
