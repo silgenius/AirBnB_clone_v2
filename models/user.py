@@ -10,6 +10,7 @@ from models.base_model import BaseModel
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, String
 
+
 class User(BaseModel):
     """
     Represents a user with email, password, first name,
@@ -28,10 +29,16 @@ class User(BaseModel):
     first_name = Column(String(128))
     last_name = Column(String(128))
 
-    places = relationship("Place", cascade="all, delete, delete-orphan",
-            backref="user")
-    reviews = relationship("Review", cascade="all, delete, delete-orphan",
-            backref="user")
+    places = relationship(
+            "Place",
+            cascade="all, delete, delete-orphan",
+            backref="user"
+            )
+    reviews = relationship(
+            "Review",
+            cascade="all, delete, delete-orphan",
+            backref="user"
+            )
 
     def __init__(self, *args, **kwargs):
         """

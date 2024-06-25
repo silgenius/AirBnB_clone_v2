@@ -15,6 +15,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 
 Base = declarative_base()
 
+
 class BaseModel:
     """
     BaseModel class defines common attributes/methods for other classes.
@@ -41,16 +42,21 @@ class BaseModel:
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
 
-
     def __str__(self):
         """
         Returns a string representation of the BaseModel instance.
         """
+
+        dict_rep = self.__dict__.copy()
+
+        if '_sa_instance_state' in dict_rep:
+            dict_rep.pop('_sa_instance_state')
+
         return ("[{}] ({}) {}"
                 .format(
                     self.__class__.__name__,
                     self.id,
-                    self.__dict__
+                    dict_rep
                     )
                 )
 
@@ -73,8 +79,8 @@ class BaseModel:
         new_dict['created_at'] = self.created_at.isoformat()
         new_dict['updated_at'] = self.updated_at.isoformat()
 
-        if "_sa_instance_state" in new_dict.keys():
-            new_dict.pop("_sa_instance_state")
+        if '_sa_instance_state' in new_dict.keys():
+            new_dict.pop('_sa_instance_state')
 
         return new_dict
 
