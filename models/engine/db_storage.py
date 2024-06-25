@@ -41,13 +41,12 @@ class DBStorage:
             cls_list = []
             cls_liat.append(cls)
         else:
-            cls_list = [User, State, City, Amenity, Place, Review]
+            cls_list = [State, City]
         new_dict = {}
         for cls in cls_list:
-            results = self.__session.query(cls)
-            for result in results:
-                print(result)
-                key = result[0].__class.__name + "." + result[0].id
+            result = self.__session.query(cls.id).first()
+            if result:
+                key = "State" + "." + result[0]
                 new_dict[key] = result[0]
         return new_dict
 
