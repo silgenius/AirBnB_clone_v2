@@ -8,8 +8,29 @@
 """
 
 from models.base_model import BaseModel, Base
+from models import storage
 from sqlalchemy import Colunm, Integer, Float, String, ForeignKey
 from sqlalchemy.orm import relationship
+from os import getenv
+
+
+"""
+    This is a Table for creating the relationship
+    Many-To-Many between Place and Amenity 
+    attributes: 
+    place_id (str):the id of the place never NULL.
+    amenity_id (str): the id of the amenity never NULL.
+"""
+place_amenity = Table("place_amenity", Base.metadata,
+                        Column("place_id", String(60),
+                        ForeignKey("places.id"),
+                        primary_key=True, nullable=False),
+                        Column("amenity_id", String(60),
+                        ForeignKey("amenities.id"),
+                        primary_key=True, nullable=False))
+
+
+
 
 class Place(BaseModel, Base):
     """
@@ -28,7 +49,9 @@ class Place(BaseModel, Base):
             longitude (float): Of the place.
             amenity_ids (list) : list of amenities ids. 
     """
+
     __tablename__ = 'places'
+
     city_id = Colunm(String(60), ForeignKey('cities.id'), nullable=False)
     user_id = Colunm(String(60), ForeignKey('users.id'), nullable=False)
     name = Colunm(String(128), nullable=False)
@@ -43,3 +66,33 @@ class Place(BaseModel, Base):
 
     reviews = relationship("Review", cascade="all, delete",
             backref="place")
+    amenities = relationship("Amenity", secondary="place_amenity"
+                            viewonly=False, backref="palce_amenities")
+
+
+
+    if getenv('HBNB_TYPE_STORAGE') !='db':
+    @property
+    def reviews(self):
+        """This is a getter attribute reviews that returns the list
+        of Review instances with place_id equals to the current Place.id"""
+    
+    review_insts = storage.all(Review)
+    for review in review_insts.values():
+        if review.place_id == self.id:
+            return review
+
+
+    @property
+    def amenities(self):
+        """ A function  that returns a list of amenity ids """
+        
+        return self.amenity_ids
+
+    @amenities.setter
+    def amenities(self, inst=None):
+    """ This is a Setter attribute amenities that 
+        handles append method of amenity id to ids list."""
+
+    if type(inst) is Amenity and inst.id not in self.amenity_ids:
+        self.amenity_ids.append(inst.id)
