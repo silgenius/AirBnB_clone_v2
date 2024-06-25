@@ -10,12 +10,12 @@
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from os import getenv
-from .models.city import City
-from .models.state import State
-from .models.review import Review
-from .models.place import Place
-from .models.amenity import Amenity
-from .models.user import User
+from models.city import City
+from models.state import State
+from models.review import Review
+from models.place import Place
+from models.amenity import Amenity
+from models.user import User
 
 
 class DBStorage:

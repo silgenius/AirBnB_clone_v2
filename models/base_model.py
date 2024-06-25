@@ -10,10 +10,11 @@
 
 import uuid
 from datetime import datetime
-from . import storage
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
+
 Base = declarative_base()
+
 class BaseModel:
     """
     BaseModel class defines common attributes/methods for other classes.
@@ -52,6 +53,8 @@ class BaseModel:
         """
         Updates the updated_at attribute with the current datetime.
         """
+        from . import storage
+
         self.updated_at = datetime.now()
         storage.new(self)
         storage.save()
