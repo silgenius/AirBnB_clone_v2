@@ -20,7 +20,7 @@ class BaseModel:
     BaseModel class defines common attributes/methods for other classes.
     """
 
-    id = Column(String(60), primary_key=True, default=lambda: str(uuid.uuid4()), nullable=False)
+    id = Column(String(60), primary_key=True, unique=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
@@ -36,6 +36,11 @@ class BaseModel:
                     setattr(self, key, datetime.fromisoformat(value))
                 else:
                     setattr(self, key, value)
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+
 
     def __str__(self):
         """

@@ -10,20 +10,21 @@ if __name__ == "__main__":
     from models.state import State
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
-    import sys
+    from os import getenv
 
-    username = "hbnb_test"
-    password = "hbnb_test_pwd"
-    database = "hbnb_test_db"
+    username = "hbnb_dev"
+    password = "hbnb_dev_pwd"
+    database = "hbnb_dev_db"
 
     engine = create_engine(f'mysql+mysqldb://{username}:{password}@localhost/{database}', pool_pre_ping=True)
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    state = session.query(State.id, State.name).first()
+    states = session.query(State.id, State.name)
 
-    if state:
-        print(f'{state[0]}, {state[1]}')
+    if states:
+        for state in states:
+            print(f'{state[0]}, {state[1]}')
     else:
         print("Not found")
 

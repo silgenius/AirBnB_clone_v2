@@ -37,18 +37,14 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
+        new_obj = {}
         if cls:
-            cls_list = []
-            cls_liat.append(cls)
-        else:
-            cls_list = [State, City]
-        new_dict = {}
-        for cls in cls_list:
-            result = self.__session.query(cls.id).first()
-            if result:
-                key = "State" + "." + result[0]
-                new_dict[key] = result[0]
-        return new_dict
+            # Query all instances of the specified class
+            objects = self.__session.query(cls).all()
+            for obj in objects:
+                key = f'{obj.__name__}.{obj.id}'
+                new_obj[key] = obj
+        return new_obj
 
     def new(self, obj):
         self.__session.add(obj)
