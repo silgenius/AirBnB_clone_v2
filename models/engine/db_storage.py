@@ -8,7 +8,7 @@
 """
 
 from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import session.maker
+from sqlalchemy.orm import sessionmaker
 from os import getenv
 from .models.city import City
 from .models.state import State
@@ -41,14 +41,16 @@ class DBStorage:
             cls_liat.append(cls)
         else:
             cls_list = [User, State, City, Amenity, Place, Review]
+        new_dict = {}
         for cls in cls_list:
             data = self.__session.query(cls)
             for result in results:
                 key = result[0].__class.__name + "." + result[0].id
-               new_dict[key] = result[0].to_dict()
+                new_dict[key] = result[0]
+        return new_dict
 
     def new(self, obj):
-        self.__session(obj)
+        self.__session.new(obj)
 
     def save(self):
         session.commit()
@@ -56,6 +58,7 @@ class DBStorage:
     def delete(self, obj=None):
         if obj is not None:
             self.__session.delete(obj)
+            self.save()
 
     def reload(self):
         Base.metadata.create_all(engine)
