@@ -3,16 +3,17 @@
 """
     Module: user
 
-    This module implements the User class, which inherits from BaseModel.
+    This module implements the User class, which inherits from BaseModel
+    and base respectively.
 """
 
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
 from sqlalchemy.orm import relatioship
 from sqlalchemy import Column, String
 
-class User(BaseModel):
+class User(BaseModel, Base):
     """
-    Represents a user with email, password, first name,
+    This class represents a user with email, password, first name,
     and last name attributes.
 
     Attributes:

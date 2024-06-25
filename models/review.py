@@ -3,16 +3,18 @@
 """
     Module: review
 
-    This module implements the Review class, which inherits from BaseModel.
+    This module implements the Review class, which inherits from BaseModel
+    and Base respectively.
 """
 
 from models.base_model import BaseModel
+from sqlachemy import Colunm, String, ForeignKey 
 
-
-class Review(BaseModel):
+class Review(BaseModel, Base):
     """
-    Represents a review for a place.
+    This class represents a review for a place.
     """
-    place_id = ""
-    user_id = ""
-    text = ""
+    __tablename__ = 'reviews'
+    place_id = Colunm(String(60), ForeignKey('places.id'), nullable=False)
+    user_id = Colunm(String(60), ForeignKey('users.id'), nullable=False)
+    text =  Colunm(String(1024), nullable=False)
