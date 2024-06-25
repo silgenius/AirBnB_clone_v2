@@ -19,4 +19,3 @@ class Amenity(BaseModel, Base):
     """
     __tablename__ = "amenities"
     name = Colunm(String(128), nullable=False)
-    place_amenities = 
