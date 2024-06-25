@@ -14,7 +14,7 @@ class City(BaseModel, Base):
     """
     Represents a city within a state.
     """
-    __tablename__ = "cities"
+    __tablename__ = 'cities'
 
-    state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
     name = Column(String(128), nullable=False)
+    state_id = Column(String(60), ForeignKey('states.id'), nullable=False)

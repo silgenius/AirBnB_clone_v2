@@ -9,13 +9,13 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, String
-from city import City
+from .city import City
 
 class State(BaseModel, Base):
     """
     Represents a state where cities are located.
     """
-    __tablename__ = "states"
+    __tablename__ = 'states'
 
     name = Column(String(128), nullable=False)
     cities = relationship("City", backref="state", cascade="all, delete-orphan")

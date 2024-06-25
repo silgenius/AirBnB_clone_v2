@@ -11,7 +11,7 @@
 import uuid
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, DateTime
 
 Base = declarative_base()
 
@@ -19,6 +19,10 @@ class BaseModel:
     """
     BaseModel class defines common attributes/methods for other classes.
     """
+
+    id = Column(String(60), primary_key=True, default=lambda: str(uuid.uuid4()), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     def __init__(self, *args, **kwargs):
         """
@@ -32,10 +36,6 @@ class BaseModel:
                     setattr(self, key, datetime.fromisoformat(value))
                 else:
                     setattr(self, key, value)
-        else:
-            self.id = Column(String(60), primary_key=True, nullable=False)
-            self.created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-            self.updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     def __str__(self):
         """

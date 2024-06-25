@@ -7,7 +7,7 @@
 """
 
 from models.base_model import BaseModel
-from sqlalchemy.orm import relatioship
+from sqlalchemy.orm import relationship
 from sqlalchemy import Column, String
 
 class User(BaseModel):
@@ -23,7 +23,7 @@ class User(BaseModel):
         All attributes defaults to an empty string.
     """
     __tablename__ = 'users'
-    email = Colunm(String(128), nullable=False)
+    email = Column(String(128), nullable=False)
     password = Column(String(128), nullable=False)
     first_name = Column(String(128))
     last_name = Column(String(128))
