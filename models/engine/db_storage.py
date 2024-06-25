@@ -54,7 +54,7 @@ class DBStorage:
             cls_list = []
             cls_list.append(cls)
         else:
-            cls_list = [State, City]
+            cls_list = [State, City, User, Amenity, Place, Review]
 
         new_obj = {}
         for cls in cls_list:
