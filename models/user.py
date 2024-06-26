@@ -24,6 +24,7 @@ class User(BaseModel, Base):
         last_name (str): The last name of the user.
         All attributes defaults to an empty string.
     """
+
     __tablename__ = 'users'
     
     email = Column(String(128), nullable=False)
