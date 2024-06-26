@@ -89,11 +89,15 @@ class HBNBCommand(cmd.Cmd):
             if len(param) == 2:
                 kn = param[0]
                 value = param[1]
-                value = eval(value)
-                if isinstance(value, str):
-                    value = value.replace(
-                        "_", " ").replace('"', '\\"')
-                setattr(new_obj, kn, value)
+                try:
+                    value = eval(value)
+                except (NameError, SyntaxError, Exception):
+                    pass
+                else:
+                    if isinstance(value, str):
+                        value = value.replace(
+                            "_", " ").replace('"', '\\"')
+                    setattr(new_obj, kn, value)
 
         storage.new(new_obj)
         print(new_obj.id)
