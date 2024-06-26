@@ -40,9 +40,3 @@ class User(BaseModel, Base):
             cascade="all, delete, delete-orphan",
             backref="user"
             )
-
-    def __init__(self, *args, **kwargs):
-        """
-        Initializes a new User instance.
-        """
-        super().__init__(*args, **kwargs)
