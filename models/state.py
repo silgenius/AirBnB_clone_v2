@@ -29,7 +29,7 @@ class State(BaseModel, Base):
     def cities(self):
         all_cities = storage.all(City)
         result = []
-        for city in all_cities.get_values():
+        for city in all_cities.values():
             if city.state_id == self.id:
                 result.append(city)
         return result

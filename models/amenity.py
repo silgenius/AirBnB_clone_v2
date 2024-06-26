@@ -10,6 +10,7 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
 
+
 class Amenity(BaseModel, Base):
     """
     This class represents an amenity available in a place.
