@@ -8,7 +8,7 @@
 """
 
 from models.base_model import BaseModel, Base
-from sqlalchemy import Colunm, String
+from sqlalchemy import Column, String
 
 class Amenity(BaseModel, Base):
     """
@@ -18,4 +18,4 @@ class Amenity(BaseModel, Base):
             name (str): The name of the amenity.
     """
     __tablename__ = "amenities"
-    name = Colunm(String(128), nullable=False)
+    name = Column(String(128), nullable=False)

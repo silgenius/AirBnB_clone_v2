@@ -8,8 +8,7 @@
 """
 
 from models.base_model import BaseModel, Base
-from models import storage
-from sqlalchemy import Colunm, Integer, Float, String, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from os import getenv
 
@@ -52,35 +51,41 @@ class Place(BaseModel, Base):
 
     __tablename__ = 'places'
 
-    city_id = Colunm(String(60), ForeignKey('cities.id'), nullable=False)
-    user_id = Colunm(String(60), ForeignKey('users.id'), nullable=False)
-    name = Colunm(String(128), nullable=False)
-    description = Colunm(String(1024))
-    number_rooms = Colunm(Integer, nullable=False, default=0)
-    number_bathrooms = Colunm(Integer, nullable=False, default=0)
-    max_guest = Colunm(Integer, nullable=False, default=0)
-    price_by_night = Colunm(Integer, nullable=False, default=0)
-    latitude = Colunm(Float)
-    longitude = Colunm(Float)
+    city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
+    user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
+    name = Column(String(128), nullable=False)
+    description = Column(String(1024))
+    number_rooms = Column(Integer, nullable=False, default=0)
+    number_bathrooms = Column(Integer, nullable=False, default=0)
+    max_guest = Column(Integer, nullable=False, default=0)
+    price_by_night = Column(Integer, nullable=False, default=0)
+    latitude = Column(Float)
+    longitude = Column(Float)
     amenity_ids = []
 
     reviews = relationship("Review", cascade="all, delete",
             backref="place")
-    amenities = relationship("Amenity", secondary="place_amenity"
-                            viewonly=False, backref="palce_amenities")
+    amenities = relationship("Amenity",
+            secondary="place_amenity",
+            viewonly=False,
+            backref="palce_amenities"
+            )
 
 
 
     if getenv('HBNB_TYPE_STORAGE') !='db':
-    @property
-    def reviews(self):
-        """This is a getter attribute reviews that returns the list
-        of Review instances with place_id equals to the current Place.id"""
-    
-    review_insts = storage.all(Review)
-    for review in review_insts.values():
-        if review.place_id == self.id:
-            return review
+        @property
+        def reviews(self):
+            """This is a getter attribute reviews that returns the list
+            of Review instances with place_id equals to the current Place.id"""
+
+            from models import storage
+
+
+            review_insts = storage.all(Review)
+            for review in review_insts.values():
+                if review.place_id == self.id:
+                    return review
 
 
     @property
@@ -91,8 +96,8 @@ class Place(BaseModel, Base):
 
     @amenities.setter
     def amenities(self, inst=None):
-    """ This is a Setter attribute amenities that 
+        """ This is a Setter attribute amenities that 
         handles append method of amenity id to ids list."""
 
-    if type(inst) is Amenity and inst.id not in self.amenity_ids:
-        self.amenity_ids.append(inst.id)
+        if type(inst) is Amenity and inst.id not in self.amenity_ids:
+            self.amenity_ids.append(inst.id)
