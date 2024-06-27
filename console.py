@@ -82,7 +82,7 @@ class HBNBCommand(cmd.Cmd):
 
         new_obj = self.allcls[cls_name]()
         for arg in args[1:]:
-            param = arg.split("=")
+            param = arg.split("=", 1)
             if not param:
                 continue
 
