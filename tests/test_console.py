@@ -11,6 +11,8 @@ from models.review import Review
 from models.state import State
 from models.user import User
 import json
+import sqlalchemy
+import MySQLdb
 
 
 class TestBasicHBNBCommand(unittest.TestCase):
@@ -622,6 +624,116 @@ class TestHBNBCommandDefault(unittest.TestCase):
                 self.assertEqual(
                         f.getvalue().strip(), "*** Unknown syntax: " + command
                         )
+
+
+class TestHBNBCommandCreateMySQL(unittest.TestCase):
+    """Tests for the do_create method of the HBNBCommand class with MySQL database."""
+
+    @classmethod
+    def setUpClass(cls):
+        """Set up for the test case. Create a connection to the MySQL database."""
+        cls.db = MySQLdb.connect(
+            host="localhost",
+            user="hbnb_test",
+            passwd="hbnb_test_pwd",
+            db="hbnb_test_db"
+        )
+        cls.cursor = cls.db.cursor()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Tear down the test case. Close the database connection."""
+        cls.cursor.close()
+        cls.db.close()
+
+    def setUp(self):
+        """Setup for the tests."""
+        self.cli = HBNBCommand()
+        self.cli.stdout = StringIO()
+
+    def count_states(self):
+        """Helper method to count the number of records in the states table."""
+        self.cursor.execute("SELECT COUNT(*) FROM states;")
+        return self.cursor.fetchone()[0]
+
+    def test_create_state_mysql(self):
+        """Test create State name="California" command with MySQL."""
+        initial_count = self.count_states()
+
+        with patch('sys.stdout', new=StringIO()) as f:
+            self.cli.onecmd('create State name="California"')
+            output = f.getvalue().strip()
+
+        final_count = self.count_states()
+
+        self.assertEqual(final_count, initial_count + 1)
+        self.assertTrue(output)
+
+
+class TestUserAttributes(unittest.TestCase):
+    """Tests for User attributes"""
+
+    def setUp(self):
+        """Set up the test case"""
+        self.user = User(email="", first_name="", last_name="")
+
+    def test_user_attributes(self):
+        """Test if User has the correct attributes"""
+        self.assertEqual(self.user.email, "")
+        self.assertEqual(self.user.first_name, "")
+        self.assertEqual(self.user.last_name, "")
+
+    def test_user_serialization(self):
+        """Test if User can be serialized and deserialized correctly"""
+        self.user.email = "test@example.com"
+        user_dict = self.user.to_dict()
+        deserialized_user = User(**user_dict)
+        self.assertEqual(deserialized_user.email, "test@example.com")
+
+    def test_User_email_type(self):
+        """Test if email is of type str"""
+        self.assertIs(type(self.user.email), str)
+
+    def test_User_first_name_type(self):
+        """Test if first_name is of type str"""
+        self.assertIs(type(self.user.first_name), str)
+
+class TestBaseModelSaveMethod(unittest.TestCase):
+    """Tests for BaseModel save method"""
+
+    @patch('models.storage')
+    def setUp(self, mock_storage):
+        """Set up the test case"""
+        self.model = BaseModel()
+        mock_storage.new.return_value = None
+        mock_storage.save.return_value = None
+
+    @patch('models.storage')
+    def test_save_method(self, mock_storage):
+        """Test the save method"""
+        self.model.save()
+        mock_storage.new.assert_called_once_with(self.model)
+        mock_storage.save.assert_called_once()
+
+class TestDBStorageIntegration(unittest.TestCase):
+    """Integration tests with the database"""
+
+    def setUp(self):
+        """Set up the database"""
+        from models import storage
+
+
+        self.storage = storage
+        self.storage.reload()
+        self.user = User(email="test@example.com", first_name="John", last_name="Doe")
+        self.user.save()
+
+    def test_save_method_Unintentional_change(self):
+        """Test saving a User with an email"""
+        user = User(email="newemail@example.com")
+        user.save()
+        self.assertIsNotNone(user.id)
+        self.assertEqual(user.email, "newemail@example.com")
 
 
 if __name__ == '__main__':
