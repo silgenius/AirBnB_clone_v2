@@ -12,6 +12,7 @@ from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from .place import place_amenity
 
+
 class Amenity(BaseModel, Base):
     """
     This class represents an amenity available in a place.

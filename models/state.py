@@ -12,6 +12,7 @@ from sqlalchemy import Column, String
 from .city import City
 from os import getenv
 
+
 class State(BaseModel, Base):
     """
     Represents a state where cities are located.

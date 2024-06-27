@@ -11,6 +11,7 @@ from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 from models.place import Place
 
+
 class City(BaseModel, Base):
     """
     Represents a city within a state.

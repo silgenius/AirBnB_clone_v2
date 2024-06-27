@@ -40,7 +40,7 @@ class BaseModel:
                 else:
                     setattr(self, key, value)
 
-                # Create object if not yet exist    
+                # Create object if not yet exist
                 if self.id is None:
                     self.id = str(uuid.uuid4())
                     self.created_at = datetime.now()

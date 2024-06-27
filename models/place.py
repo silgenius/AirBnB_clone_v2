@@ -71,7 +71,11 @@ class Place(BaseModel, Base):
     storage_type = getenv('HBNB_TYPE_STORAGE')
 
     if storage_type == 'db':
-        reviews = relationship("Review", cascade="all, delete", backref="place")
+        reviews = relationship(
+                "Review",
+                cascade="all, delete",
+                backref="place"
+                )
     else:
         @property
         def reviews(self):
@@ -79,7 +83,6 @@ class Place(BaseModel, Base):
             of Review instances with place_id equals to the current Place.id"""
 
             from models import storage
-
 
             result = []
             review_insts = storage.all(Review)
@@ -99,12 +102,19 @@ class Place(BaseModel, Base):
     else:
         @property
         def amenities(self):
-            """Getter attribute amenities that returns the list of Amenity instances"""
+            """Getter attribute amenities that returns the list of Amenity
+            instances"""
             from models import storage
-            return [storage.get('Amenity', amenity_id) for amenity_id in self.amenity_ids]
+
+            return [
+                    storage.get('Amenity', amenity_id)
+                    for amenity_id in self.amenity_ids
+                    ]
 
         @amenities.setter
         def amenities(self, obj):
-            """Setter attribute amenities that handles append method for adding an Amenity.id"""
+            """Setter attribute amenities that handles append method for
+            adding an Amenity.id"""
+
             if isinstance(obj, Amenity):
                 self.amenity_ids.append(obj.id)
