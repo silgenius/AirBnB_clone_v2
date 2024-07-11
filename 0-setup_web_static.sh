@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# a Bash script that sets up your web servers for the deployment of web_static
+# Bash script that sets up your web servers for the deployment of web_static
 
 # check if nginx is installed
 check=$(which nginx)
 if [ -z $check ]; then
-	sudo apt-get update
-	sudo apt install nginx -y
-	sudo service nginx start
+        sudo apt-get update
+        sudo apt install nginx -y
+        sudo service nginx start
 fi
 
-mkdir /data
+mkdir -p /data
 mkdir -p /data/web_static
 mkdir -p /data/web_static/releases
 mkdir -p /data/web_static/shared
@@ -22,24 +22,15 @@ printf %s "<html>
   <body>
     Alx School
   </body>
-</html>" >> /data/web_static/releases/test/index.html
+</html>
+" > /data/web_static/releases/test/index.html
 
-sudo ln -s /data/web_static/releases/test/ /data/web_static/current
-chown -R ubuntu:ubuntu /data
+sudo ln -sf /data/web_static/releases/test /data/web_static/current
+sudo chown -R $USER:$USER /data
+sudo chown -R $USER:$USER /etc/nginx/
 
-printf %s "server {
-	listen 80 default_server;
-        listen [::]:80 default_server;
-        root /var/www/html;
-
-        # Add index.php to the list if you are using PHP
-        index index.html index.htm index.nginx-debian.html;
-
-        server_name _;
-
-	location /hbnb_static {
-		alias /data/web_static/current/
-	}
-}" >> /etc/nginx/sites-available/default
+content="server_name _;\n\n\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\
+        \n\t\tindex index.html index.htm;\n\t}\n"
+sudo sed -i "s|server_name _;|${content}|g" /etc/nginx/sites-available/default
 
 sudo service nginx restart
