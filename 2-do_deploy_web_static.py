@@ -13,26 +13,6 @@ env.hosts = ['54.88.64.221', '54.87.212.173']
 
 
 def do_deploy(archive_path):
-
-    """Generates a .tgz archive from the contents of the web_static folder."""
-
-    # Create versions directory if it doesn't exist
-    if not os.path.exists("versions"):
-        os.makedirs("versions")
-
-    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    archive_name = f"versions/web_static_{timestamp}.tgz"
-
-    command = f'tar -czvf {archive_name} web_static'
-    result = local(command, capture=True)
-
-    # Check if the archive was created successfully
-    if result.failed:
-        return None
-    
-    if not archive_path:
-        archive_path = archive_name
-
     """
     distributes an archive to your web servers
     """
@@ -54,6 +34,6 @@ def do_deploy(archive_path):
         sudo(f'ln -s /data/web_static/releases/{name} \
                 /data/web_static/current')
     except Exception as e:
-        return False
+        return None
 
     return True
