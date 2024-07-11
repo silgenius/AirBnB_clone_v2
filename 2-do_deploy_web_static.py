@@ -1,62 +1,74 @@
 #!/usr/bin/python3
-"""A fabric script that generates a .tgz archive from
-the contents of the web_static folder and deploys it to
-a web server"""
+"""
+ a Fabric script (based on the file 1-pack_web_static.py) that distributes
+ an archive to your web servers, using the function do_deploy:
+ """
 
-from fabric.api import *
-from os import path
-import re
+from fabric.api import env, put, run
+import os
 
-env.user = 'ubuntu'
 env.hosts = ['54.88.64.221', '54.87.212.173']
-env.key_filename = "~/.ssh/school"
+env.user = 'ubuntu'
+env.key_filename = '~/.ssh/school'
 
+def do_pack():
+    """Generates a .tgz archive from the contents of the web_static folder."""
 
+    # Create versions directory if it doesn't exist
+    if not os.path.exists("versions"):
+        os.makedirs("versions")
+
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    archive_name = f"versions/web_static_{timestamp}.tgz"
+
+    command = f'tar -czvf {archive_name} web_static'
+    result = local(command, capture=True)
+
+    # Check if the archive was created successfully
+    if result.failed:
+        return None
+    else:
+        return archive_name
+        
 def do_deploy(archive_path):
-    """Deploys an archive to web servers"""
-    # if archive_path is None:
-    #     return False
-    if not path.exists(archive_path):
+    """
+    Distributes an archive to web servers.
+    """
+    if not os.path.exists(archive_path):
         return False
+    
+    try:
+        # Extract the archive file name and its base name without extension
+        archive_file = os.path.basename(archive_path)
+        archive_no_ext = archive_file.split('.')[0]
+        
+        # Define target paths
+        tmp_path = f'/tmp/{archive_file}'
+        release_path = f'/data/web_static/releases/{archive_no_ext}/'
 
-    if put(archive_path, "/tmp/").failed is True:
-        return None
-    # get the archive filename without extension
-    pattern = r'\/([^\/.]+)\.'
-    match = re.search(pattern, archive_path)
-    pathname = match.group(1)
-    # get filename with extension
-    fn = archive_path.split('/')[1]
-    # create destination folder for unzipping
-    destination_path = "/data/web_static/releases/{}".format(pathname)
-    cmd = run("mkdir -p {}".format(destination_path))
-    if cmd.failed is True:
-        return None
-    # unzip files to destination folder
-    cmd = run("tar -xvzf /tmp/{} -C /data/web_static/releases/{}".format(
-         fn, pathname))
-    if cmd.failed is True:
-        return None
-    # delete archive
-    cmd = sudo("rm -rf /tmp/{}".format(fn))
-    if cmd.failed is True:
-        return None
-    # delete old symbolic link
-    cmd = run("rm -rf /data/web_static/current")
-    if cmd.failed is True:
-        return None
-    # move all contents of decompressed web_static to
-    # destination folder, then delete it
-    cmd = run("mv /data/web_static/releases/{}/web_static/*\
-               /data/web_static/releases/{}".format(pathname, pathname))
-    if cmd.failed is True:
-        return None
-    cmd = run("rm -rf /data/web_static/releases/{}/web_static".format(
-        pathname))
-    if cmd.failed is True:
-        return None
-    # add new symbolic link
-    cmd = run("ln -sf {} /data/web_static/current".format(destination_path))
-    if cmd.failed is True:
-        return None
-    return True
+        # Upload the archive to the /tmp/ directory
+        put(archive_path, tmp_path)
+
+        # Create the release directory
+        run(f'mkdir -p {release_path}')
+
+        # Uncompress the archive
+        run(f'tar -xzf {tmp_path} -C {release_path}')
+
+        # Move the contents out of the extracted folder
+        run(f'mv {release_path}web_static/* {release_path}')
+        run(f'rm -rf {release_path}web_static')
+
+        # Delete the archive from the web server
+        run(f'rm {tmp_path}')
+
+        # Delete the old symbolic link
+        run('rm -rf /data/web_static/current')
+
+        # Create a new symbolic link
+        run(f'ln -s {release_path} /data/web_static/current')
+
+        return True
+
+    except Exception as e:
+        return False
