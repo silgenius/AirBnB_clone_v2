@@ -29,7 +29,8 @@ def do_deploy(archive_path):
         sudo(f'rm /tmp/{filename}')
         sudo(f'mv /data/web_static/releases/{name}/web_static/* \
                 /data/web_static/releases/{name}')
-        sudo('rm /data/web_static/current')
+        sudo('rm -rf /data/web_static/current')
+        sudo (f'rm -rf /data/web_static/releases/{name}/web_static')
         sudo(f'ln -s /data/web_static/releases/{name} \
                 /data/web_static/current')
     except Exception as e:
