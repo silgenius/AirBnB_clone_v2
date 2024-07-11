@@ -22,18 +22,30 @@ def do_deploy(archive_path):
 
     filename = os.path.basename(archive_path)
     name = filename.split('.')[0]
-    try:
-        put(archive_path, '/tmp/')
-        sudo(f'mkdir -p /data/web_static/releases/{name}')
-        sudo(f'tar -xzf /tmp/{filename} -C /data/web_static/releases/{name}')
-        sudo(f'rm /tmp/{filename}')
-        sudo(f'mv /data/web_static/releases/{name}/web_static/* \
-                /data/web_static/releases/{name}')
-        sudo('rm -rf /data/web_static/current')
-        sudo (f'rm -rf /data/web_static/releases/{name}/web_static')
-        sudo(f'ln -s /data/web_static/releases/{name} \
-                /data/web_static/current')
-    except Exception as e:
-        return None
+
+    result = put(archive_path, '/tmp/')
+    if result.failed:
+        return False
+    result = sudo(f'mkdir -p /data/web_static/releases/{name}')
+    if result.failed:
+        return False
+    result = sudo(f'tar -xzf /tmp/{filename} -C /data/web_static/releases/{name}')
+    if result.failed:
+        return False
+    result = sudo(f'rm /tmp/{filename}')
+    if result.failed:
+        return False
+    result = sudo(f'mv /data/web_static/releases/{name}/web_static/* /data/web_static/releases/{name}')
+    if result.failed:
+        return False
+    result = sudo('rm -rf /data/web_static/current')
+    if result.failed:
+        return False
+    result = sudo (f'rm -rf /data/web_static/releases/{name}/web_static')
+    if result.failed:
+        return False
+    result = sudo(f'ln -s /data/web_static/releases/{name} /data/web_static/current')
+    if result.failed:
+        return False
 
     return True
