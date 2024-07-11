@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-content="server_name _;\n\n\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\
-	\n\t\tindex index.html index.htm;\n\t}\n"
-sudo sed -i "s|server_name _;|${content}|g" /etc/nginx/sites-available/default
