@@ -1,5 +1,8 @@
 # using Puppet to configure a server
 
+$content="server_name _;\n\n\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\
+        \n\t\tindex index.html index.htm;\n\t}\n"
+
 exec { 'apt_update':
 command => '/usr/bin/sudo /usr/bin/apt-get update'
 }
@@ -38,8 +41,8 @@ file { '/data':
 
 file_line { 'nginx-config':
   path  => '/etc/nginx/sites-available/default',
-  line  => 'location /hbnb_static { alias /data/web_static/current; }',
-  match => '^location /hbnb_static {',
+  line  => $content,
+  match => 'server_name _;',
 }
 
 service { 'nginx':
