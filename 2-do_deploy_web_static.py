@@ -11,6 +11,7 @@ env.hosts = ['54.88.64.221', '54.87.212.173']
 env.user = 'ubuntu'
 env.key_filename = '~/.ssh/school'
 
+
 def do_pack():
     """Generates a .tgz archive from the contents of the web_static folder."""
 
@@ -29,19 +30,20 @@ def do_pack():
         return None
     else:
         return archive_name
-        
+
+
 def do_deploy(archive_path):
     """
     Distributes an archive to web servers.
     """
     if not os.path.exists(archive_path):
         return False
-    
+
     try:
         # Extract the archive file name and its base name without extension
         archive_file = os.path.basename(archive_path)
         archive_no_ext = archive_file.split('.')[0]
-        
+
         # Define target paths
         tmp_path = f'/tmp/{archive_file}'
         release_path = f'/data/web_static/releases/{archive_no_ext}/'
