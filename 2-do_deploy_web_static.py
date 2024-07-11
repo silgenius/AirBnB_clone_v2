@@ -33,7 +33,7 @@ def do_deploy(archive_path):
                 /data/web_static/releases/{name}')
         sudo('rm -rf /data/web_static/current')
         sudo (f'rm -rf /data/web_static/releases/{name}/web_static')
-        sudo(f'ln -s /data/web_static/releases/{name} \
+        sudo(f'ln -sf /data/web_static/releases/{name} \
                 /data/web_static/current')
     except Exception as e:
         return False
