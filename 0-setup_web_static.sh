@@ -2,8 +2,8 @@
 # Bash script that sets up your web servers for the deployment of web_static
 
 # check if nginx is installed
-check=$(which nginx)
-if [ -z $check ]; then
+if ! command -v nginx &> /dev/null
+then
         sudo apt-get update
         sudo apt install nginx -y
         sudo service nginx start
@@ -26,8 +26,8 @@ printf %s "<html>
 " > /data/web_static/releases/test/index.html
 
 sudo ln -sf /data/web_static/releases/test /data/web_static/current
-sudo chown -R $USER:$USER /data
-sudo chown -R $USER:$USER /etc/nginx/
+sudo chown -R "$USER":"$USER" /data
+sudo chown -R "$USER":"$USER" /etc/nginx/
 
 content="server_name _;\n\n\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\
         \n\t\tindex index.html index.htm;\n\t}\n"
