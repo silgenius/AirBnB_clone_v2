@@ -47,26 +47,26 @@ def do_deploy(archive_path):
         release_path = f'/data/web_static/releases/{archive_no_ext}/'
 
         # Upload the archive to the /tmp/ directory
-        put(archive_path, tmp_path)
+        sudo(archive_path, tmp_path)
 
         # Create the release directory
-        run(f'mkdir -p {release_path}')
+        sudo(f'mkdir -p {release_path}')
 
         # Uncompress the archive
-        run(f'tar -xzf {tmp_path} -C {release_path}')
+        sud(f'tar -xzf {tmp_path} -C {release_path}')
 
         # Move the contents out of the extracted folder
-        run(f'mv {release_path}web_static/* {release_path}')
-        run(f'rm -rf {release_path}web_static')
+        sudo(f'mv {release_path}web_static/* {release_path}')
+        sudo(f'rm -rf {release_path}web_static')
 
         # Delete the archive from the web server
-        run(f'rm {tmp_path}')
+        sudo(f'rm {tmp_path}')
 
         # Delete the old symbolic link
-        run('rm -rf /data/web_static/current')
+        sudo('rm -rf /data/web_static/current')
 
         # Create a new symbolic link
-        run(f'ln -s {release_path} /data/web_static/current')
+        sudo(f'ln -s {release_path} /data/web_static/current')
 
         return True
 
