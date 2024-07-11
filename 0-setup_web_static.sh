@@ -9,11 +9,8 @@ then
         sudo service nginx start
 fi
 
-mkdir -p /data
-mkdir -p /data/web_static
-mkdir -p /data/web_static/releases
-mkdir -p /data/web_static/shared
-mkdir -p /data/web_static/releases/test
+sudo mkdir -p /data/web_static/releases/test/
+sudo mkdir -p /data/web_static/shared/
 touch /data/web_static/releases/test/index.html
 
 printf %s "<html>
@@ -26,8 +23,8 @@ printf %s "<html>
 " > /data/web_static/releases/test/index.html
 
 sudo ln -sf /data/web_static/releases/test /data/web_static/current
-sudo chown -R "$USER":"$USER" /data
-sudo chown -R "$USER":"$USER" /etc/nginx/
+sudo chown -R "ubuntu":"ubuntu" /data
+sudo chown -R "ubuntu":"ubuntu" /etc/nginx/
 
 content="server_name _;\n\n\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\
         \n\t\tindex index.html index.htm;\n\t}\n"
