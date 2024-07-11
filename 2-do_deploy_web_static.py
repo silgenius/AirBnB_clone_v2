@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
 """
  a Fabric script (based on the file 1-pack_web_static.py) that distributes
@@ -23,9 +23,11 @@ def do_deploy(archive_path):
         sudo(f'mkdir -p /data/web_static/releases/{name}')
         sudo(f'tar -xzf /tmp/{filename} -C /data/web_static/releases/{name}')
         sudo(f'rm /tmp/{filename}')
-        sudo(f'mv /data/web_static/releases/{name}/web_static/*  /data/web_static/releases/{name}')
+        sudo(f'mv /data/web_static/releases/{name}/web_static/* \
+                /data/web_static/releases/{name}')
         sudo('rm /data/web_static/current')
-        sudo(f'ln -s /data/web_static/releases/{name} /data/web_static/current')
+        sudo(f'ln -s /data/web_static/releases/{name} \
+                /data/web_static/current')
     except Exception as e:
         return False
 
