@@ -20,7 +20,7 @@ def do_pack():
     archive_name = f"versions/web_static_{timestamp}.tgz"
 
     command = f'tar -czvf {archive_name} web_static'
-    result = local(command, capture=True)
+    result = local(command, capture=False)
 
     # Check if the archive was created successfully
     if result.failed:
