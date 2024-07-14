@@ -11,11 +11,12 @@ package { 'nginx':
   ensure => installed,
 }
 
-file { ['/data', '/data/web_static', '/data/web_static/releases', '/data/web_static/shared', '/data/web_static/releases/test']:
-  ensure => directory,
-  owner  => 'ubuntu',
-  group  => 'ubuntu',
-  mode   => '0755',
+exec {'create /data/web_static/releases/test/':
+  command => 'usr/bin/mkdir -p'
+}
+
+exec {'create /data/web_static/shared/':
+  command => 'usr/bin/mkdir -p /data/web_static/shared/'
 }
 
 file { '/data/web_static/releases/test/index.html':
