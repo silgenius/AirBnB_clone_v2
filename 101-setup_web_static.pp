@@ -8,15 +8,17 @@ command => '/usr/bin/sudo /usr/bin/apt-get update'
 }
 
 package { 'nginx':
-  ensure => installed,
+  ensure => 'installed',
 }
 
 exec {'create /data/web_static/releases/test/':
-  command => 'usr/bin/mkdir -p'
+  command => 'mkdir -p /data/web_static/releases/test',
+  path    => ['/bin', '/usr/bin'],
 }
 
 exec {'create /data/web_static/shared/':
-  command => 'usr/bin/mkdir -p /data/web_static/shared/'
+  command => 'mkdir -p /data/web_static/shared/',
+  path    => ['/bin', '/usr/bin'],
 }
 
 file { '/data/web_static/releases/test/index.html':
@@ -51,4 +53,3 @@ service { 'nginx':
   enable => true,
   subscribe => File_line['nginx-config'],
 }
-
