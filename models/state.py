@@ -31,6 +31,8 @@ class State(BaseModel, Base):
     else:
         @property
         def cities(self):
+            from . import storage
+
             all_cities = storage.all(City)
             result = []
             for city in all_cities.values():
