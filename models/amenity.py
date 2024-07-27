@@ -21,4 +21,5 @@ class Amenity(BaseModel, Base):
             name (str): The name of the amenity.
     """
     __tablename__ = "amenities"
+
     name = Column(String(128), nullable=False)
